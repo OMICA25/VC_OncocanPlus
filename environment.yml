@@ -1,0 +1,23 @@
+name: ngs_env
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10
+  - bwa
+  - samtools
+  - bcftools
+  - bedtools
+  - fastqc
+  - multiqc
+  - picard
+  - varscan
+  - freebayes
+  - gatk4
+  - htslib
+  - perl
+  - perl-archive-zip
+  - openjdk
+  - curl
+  - pip
