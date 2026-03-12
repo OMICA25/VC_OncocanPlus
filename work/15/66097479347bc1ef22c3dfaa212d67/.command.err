@@ -1,0 +1,4 @@
+[E::bwa_idx_load_from_disk] fail to locate the index files
+[main_samview] fail to read the header from "-".
+[W::hts_set_opt] Cannot change block size for this format
+samtools sort: failed to read header from "-"

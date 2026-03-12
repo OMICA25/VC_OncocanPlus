@@ -1,0 +1,3 @@
+2026-03-11 12:35:06	5.8s	small_bartik	ERR	8a926d5842a9b1a70a7efe3b54bd37cd	9d6b366d-8494-4f8e-806a-c81a75e3f8c4	nextflow run main.nf -c test_local.config -profile ec2
+2026-03-11 12:37:22	3.7s	berserk_borg	ERR	8a926d5842a9b1a70a7efe3b54bd37cd	3c5f8b65-0fec-41e6-ae1d-92f01fd9326c	nextflow run main.nf -c test_local.config -profile ec2
+2026-03-11 12:38:14	5.3s	sick_visvesvaraya	ERR	8a926d5842a9b1a70a7efe3b54bd37cd	a064bf1e-d490-419f-bc8c-f719144c3635	nextflow run main.nf -c test_local.config -profile ec2

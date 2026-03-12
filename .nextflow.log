@@ -1,0 +1,192 @@
+Mar-11 12:38:13.775 [main] DEBUG nextflow.cli.Launcher - $> nextflow run main.nf -c test_local.config -profile ec2
+Mar-11 12:38:13.836 [main] DEBUG nextflow.cli.CmdRun - N E X T F L O W  ~  version 25.10.0
+Mar-11 12:38:13.869 [main] DEBUG nextflow.config.ConfigBuilder - Found config local: /home/ec2-user/VC_OncoCanPlus/nextflow.config
+Mar-11 12:38:13.873 [main] DEBUG nextflow.config.ConfigBuilder - User config file: /home/ec2-user/VC_OncoCanPlus/test_local.config
+Mar-11 12:38:13.874 [main] DEBUG nextflow.config.ConfigBuilder - Parsing config file: /home/ec2-user/VC_OncoCanPlus/nextflow.config
+Mar-11 12:38:13.875 [main] DEBUG nextflow.config.ConfigBuilder - Parsing config file: /home/ec2-user/VC_OncoCanPlus/test_local.config
+Mar-11 12:38:13.896 [main] DEBUG nextflow.config.ConfigBuilder - Applying config profile: `ec2`
+Mar-11 12:38:14.355 [main] DEBUG nextflow.config.ConfigBuilder - Applying config profile: `ec2`
+Mar-11 12:38:14.374 [main] DEBUG nextflow.config.ConfigBuilder - Available config profiles: [ec2, local]
+Mar-11 12:38:14.400 [main] DEBUG nextflow.plugin.PluginsFacade - Setting up plugin manager > mode=prod; embedded=false; plugins-dir=/home/ec2-user/.nextflow/plugins; core-plugins: nf-amazon@3.4.1,nf-azure@1.20.2,nf-cloudcache@0.5.0,nf-codecommit@0.5.0,nf-console@1.3.0,nf-google@1.23.3,nf-k8s@1.2.2,nf-tower@1.17.1,nf-wave@1.16.1
+Mar-11 12:38:14.410 [main] INFO  o.pf4j.DefaultPluginStatusProvider - Enabled plugins: []
+Mar-11 12:38:14.411 [main] INFO  o.pf4j.DefaultPluginStatusProvider - Disabled plugins: []
+Mar-11 12:38:14.414 [main] INFO  org.pf4j.DefaultPluginManager - PF4J version 3.12.0 in 'deployment' mode
+Mar-11 12:38:14.424 [main] DEBUG nextflow.util.RetryConfig - Missing nextflow session - using default retry config
+Mar-11 12:38:14.519 [main] INFO  org.pf4j.AbstractPluginManager - No plugins
+Mar-11 12:38:14.520 [main] DEBUG nextflow.plugin.PluginsFacade - Plugins default=[]
+Mar-11 12:38:14.520 [main] DEBUG nextflow.plugin.PluginsFacade - Plugins resolved requirement=[]
+Mar-11 12:38:14.534 [main] DEBUG n.secret.LocalSecretsProvider - Secrets store: /home/ec2-user/.nextflow/secrets/store.json
+Mar-11 12:38:14.536 [main] DEBUG nextflow.secret.SecretsLoader - Discovered secrets providers: [nextflow.secret.LocalSecretsProvider@48df4071] - activable => nextflow.secret.LocalSecretsProvider@48df4071
+Mar-11 12:38:14.548 [main] DEBUG nextflow.cli.CmdRun - Applied DSL=2 from script declaration
+Mar-11 12:38:14.565 [main] DEBUG nextflow.cli.CmdRun - Launching `main.nf` [sick_visvesvaraya] DSL2 - revision: 8a926d5842
+Mar-11 12:38:14.608 [main] DEBUG nextflow.Session - Session UUID: a064bf1e-d490-419f-bc8c-f719144c3635
+Mar-11 12:38:14.608 [main] DEBUG nextflow.Session - Run name: sick_visvesvaraya
+Mar-11 12:38:14.609 [main] DEBUG nextflow.Session - Executor pool size: 12
+Mar-11 12:38:14.616 [main] DEBUG nextflow.file.FilePorter - File porter settings maxRetries=3; maxTransfers=50; pollTimeout=null
+Mar-11 12:38:14.620 [main] DEBUG nextflow.util.ThreadPoolBuilder - Creating thread pool 'FileTransfer' minSize=10; maxSize=36; workQueue=LinkedBlockingQueue[-1]; allowCoreThreadTimeout=false
+Mar-11 12:38:14.636 [main] DEBUG nextflow.cli.CmdRun - 
+  Version: 25.10.0 build 10289
+  Created: 22-10-2025 16:26 UTC 
+  System: Linux 4.14.355-280.710.amzn2.x86_64
+  Runtime: Groovy 4.0.28 on OpenJDK 64-Bit Server VM 17.0.15-internal+0-adhoc..src
+  Encoding: UTF-8 (UTF-8)
+  Process: 10739@ip-10-0-101-141.eu-central-1.compute.internal [10.0.101.141]
+  CPUs: 12 - Mem: 46 GB (44.9 GB) - Swap: 0 (0)
+Mar-11 12:38:14.655 [main] DEBUG nextflow.Session - Work-dir: /home/ec2-user/VC_OncoCanPlus/work [xfs]
+Mar-11 12:38:14.656 [main] DEBUG nextflow.Session - Script base path does not exist or is not a directory: /home/ec2-user/VC_OncoCanPlus/bin
+Mar-11 12:38:14.665 [main] DEBUG nextflow.executor.ExecutorFactory - Extension executors providers=[]
+Mar-11 12:38:14.674 [main] DEBUG nextflow.Session - Observer factory (v2): LinObserverFactory
+Mar-11 12:38:14.676 [main] DEBUG nextflow.Session - Observer factory (v2): DefaultObserverFactory
+Mar-11 12:38:14.712 [main] DEBUG nextflow.cache.CacheFactory - Using Nextflow cache factory: nextflow.cache.DefaultCacheFactory
+Mar-11 12:38:14.720 [main] DEBUG nextflow.util.CustomThreadPool - Creating default thread pool > poolSize: 13; maxThreads: 1000
+Mar-11 12:38:14.774 [main] DEBUG nextflow.Session - Session start
+Mar-11 12:38:15.958 [main] DEBUG nextflow.script.ScriptRunner - > Launching execution
+Mar-11 12:38:16.142 [main] DEBUG n.plugin.HttpPluginRepository - Registry request: https://registry.nextflow.io/api/v1/plugins/dependencies?plugins=nf-amazon%403.4.1&nextflowVersion=25.10.0
+- code: 200
+- body: {"plugins":[{"id":"nf-amazon","releases":[{"version":"3.4.1","url":"https://registry.nextflow.io/api/v1/plugins/nf-amazon/3.4.1/download/nf-amazon-3.4.1.zip","date":"2025-10-22T16:29:06.396625Z","sha512sum":"bc7c4b6166aa5ef32df3362ceec263df434875b1db332594cd71c8d3f462adfcad55802034cbcfd269917e1efa4f45d224143f024fc1170d156daa40897f3873","requires":">=25.09.2-edge","dependsOn":[],"status":"PUBLISHED"}],"projectUrl":"https://github.com/nextflow-io/nf-amazon","provider":"nextflow-io"}]}
+Mar-11 12:38:16.173 [main] DEBUG nextflow.plugin.PluginUpdater - Installing plugin nf-amazon version: 3.4.1
+Mar-11 12:38:16.181 [main] INFO  org.pf4j.AbstractPluginManager - Plugin 'nf-amazon@3.4.1' resolved
+Mar-11 12:38:16.181 [main] INFO  org.pf4j.AbstractPluginManager - Start plugin 'nf-amazon@3.4.1'
+Mar-11 12:38:16.198 [main] DEBUG nextflow.plugin.BasePlugin - Plugin started nf-amazon@3.4.1
+Mar-11 12:38:16.208 [main] DEBUG nextflow.file.FileHelper - > Added 'S3FileSystemProvider' to list of installed providers [s3]
+Mar-11 12:38:16.208 [main] DEBUG nextflow.file.FileHelper - Started plugin 'nf-amazon' required to handle file: s3://omica-pipeline-data/examples/CanFam3.1ref.fa.fai
+Mar-11 12:38:16.215 [main] DEBUG nextflow.file.FileHelper - Creating a file system instance for provider: S3FileSystemProvider; config=[:]
+Mar-11 12:38:16.225 [main] DEBUG nextflow.cloud.aws.config.AwsConfig - AWS S3 config properties: {max_error_retry=5}
+Mar-11 12:38:17.621 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
+Mar-11 12:38:17.621 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Mar-11 12:38:17.630 [main] DEBUG nextflow.executor.Executor - [warm up] executor > local
+Mar-11 12:38:17.635 [main] DEBUG n.processor.LocalPollingMonitor - Creating local task monitor for executor 'local' > cpus=12; memory=480 GB; capacity=12; pollInterval=100ms; dumpInterval=5m
+Mar-11 12:38:17.637 [main] DEBUG n.processor.TaskPollingMonitor - >>> barrier register (monitor: local)
+Mar-11 12:38:17.657 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'FASTQC': maxForks=0; fair=false; array=0
+Mar-11 12:38:17.692 [main] DEBUG n.script.dsl.ProcessConfigBuilder - Config settings `withLabel:heavy_sort` matches labels `heavy_sort` for process with name ALIGNMENT
+Mar-11 12:38:17.694 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
+Mar-11 12:38:17.695 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Mar-11 12:38:17.697 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'ALIGNMENT': maxForks=3; fair=false; array=0
+Mar-11 12:38:17.700 [main] DEBUG n.script.dsl.ProcessConfigBuilder - Config settings `withLabel:heavy_sort` matches labels `heavy_sort` for process with name ADD_READ_GROUP
+Mar-11 12:38:17.701 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
+Mar-11 12:38:17.701 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Mar-11 12:38:17.702 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'ADD_READ_GROUP': maxForks=3; fair=false; array=0
+Mar-11 12:38:17.707 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
+Mar-11 12:38:17.708 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Mar-11 12:38:17.708 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'BAM_FILTER': maxForks=0; fair=false; array=0
+Mar-11 12:38:17.712 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
+Mar-11 12:38:17.712 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Mar-11 12:38:17.713 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'SAMTOOLS_FLAGSTAT': maxForks=0; fair=false; array=0
+Mar-11 12:38:17.716 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
+Mar-11 12:38:17.716 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Mar-11 12:38:17.717 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'SAMTOOLS_STATS': maxForks=0; fair=false; array=0
+Mar-11 12:38:17.723 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
+Mar-11 12:38:17.723 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Mar-11 12:38:17.724 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'BEDTOOLS_COVERAGE_HIST': maxForks=0; fair=false; array=0
+Mar-11 12:38:17.746 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
+Mar-11 12:38:17.746 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Mar-11 12:38:17.747 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'VARSCAN_CALL': maxForks=0; fair=false; array=0
+Mar-11 12:38:17.753 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
+Mar-11 12:38:17.753 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Mar-11 12:38:17.754 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'MUTECT2_CALL': maxForks=0; fair=false; array=0
+Mar-11 12:38:17.759 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
+Mar-11 12:38:17.760 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Mar-11 12:38:17.760 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'FREEBAYES_CALL': maxForks=0; fair=false; array=0
+Mar-11 12:38:17.788 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
+Mar-11 12:38:17.789 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Mar-11 12:38:17.789 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'ISEC_CONSENSUS': maxForks=0; fair=false; array=0
+Mar-11 12:38:17.794 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
+Mar-11 12:38:17.794 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Mar-11 12:38:17.795 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'ANNOVAR_ANNOTATE': maxForks=0; fair=false; array=0
+Mar-11 12:38:17.800 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
+Mar-11 12:38:17.800 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Mar-11 12:38:17.801 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'COLLAPSE_TRANSCRIPTS': maxForks=0; fair=false; array=0
+Mar-11 12:38:17.806 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
+Mar-11 12:38:17.806 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Mar-11 12:38:17.806 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'BUILD_GENE_MAP_BIOMART': maxForks=0; fair=false; array=0
+Mar-11 12:38:17.820 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
+Mar-11 12:38:17.820 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Mar-11 12:38:17.821 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'ADD_GENE_SYMBOLS': maxForks=0; fair=false; array=0
+Mar-11 12:38:17.827 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: local
+Mar-11 12:38:17.828 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Mar-11 12:38:17.829 [main] DEBUG nextflow.processor.TaskProcessor - Creating process 'MULTIQC': maxForks=0; fair=false; array=0
+Mar-11 12:38:17.833 [main] DEBUG nextflow.Session - Workflow process names [dsl2]: FASTQC, SAMTOOLS_FLAGSTAT, FREEBAYES_CALL, BEDTOOLS_COVERAGE_HIST, MULTIQC, ADD_GENE_SYMBOLS, ANNOVAR_ANNOTATE, COLLAPSE_TRANSCRIPTS, ALIGNMENT, VARSCAN_CALL, ISEC_CONSENSUS, ADD_READ_GROUP, MUTECT2_CALL, BAM_FILTER, SAMTOOLS_STATS, BUILD_GENE_MAP_BIOMART
+Mar-11 12:38:17.835 [main] DEBUG nextflow.Session - Igniting dataflow network (17)
+Mar-11 12:38:17.839 [PathVisitor-1] DEBUG nextflow.file.PathVisitor - files for syntax: glob; folder: /home/ec2-user/VC_OncoCanPlus_local/data/test/; pattern: *.fastq; options: [checkIfExists:true]
+Mar-11 12:38:17.840 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > FASTQC
+Mar-11 12:38:17.840 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > ALIGNMENT
+Mar-11 12:38:17.840 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > ADD_READ_GROUP
+Mar-11 12:38:17.840 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > BAM_FILTER
+Mar-11 12:38:17.840 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > SAMTOOLS_FLAGSTAT
+Mar-11 12:38:17.840 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > SAMTOOLS_STATS
+Mar-11 12:38:17.840 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > BEDTOOLS_COVERAGE_HIST
+Mar-11 12:38:17.840 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > VARSCAN_CALL
+Mar-11 12:38:17.841 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > MUTECT2_CALL
+Mar-11 12:38:17.841 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > FREEBAYES_CALL
+Mar-11 12:38:17.841 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > ISEC_CONSENSUS
+Mar-11 12:38:17.841 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > ANNOVAR_ANNOTATE
+Mar-11 12:38:17.841 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > COLLAPSE_TRANSCRIPTS
+Mar-11 12:38:17.841 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > BUILD_GENE_MAP_BIOMART
+Mar-11 12:38:17.841 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > ADD_GENE_SYMBOLS
+Mar-11 12:38:17.842 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > MULTIQC
+Mar-11 12:38:17.842 [main] DEBUG nextflow.script.ScriptRunner - Parsed script files:
+  Script_5b0f026e2bf0bf9b: /home/ec2-user/VC_OncoCanPlus/main.nf
+Mar-11 12:38:17.842 [main] DEBUG nextflow.script.ScriptRunner - > Awaiting termination 
+Mar-11 12:38:17.842 [main] DEBUG nextflow.Session - Session await
+Mar-11 12:38:18.001 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Mar-11 12:38:18.003 [Task submitter] INFO  nextflow.Session - [15/660974] Submitted process > ALIGNMENT (Run4.IonCode_1517_BL27)
+Mar-11 12:38:18.013 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Mar-11 12:38:18.013 [Task submitter] INFO  nextflow.Session - [f8/297140] Submitted process > FASTQC (Run4.IonCode_1517_BL27)
+Mar-11 12:38:19.081 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 2; name: ALIGNMENT (Run4.IonCode_1517_BL27); status: COMPLETED; exit: 1; error: -; workDir: /home/ec2-user/VC_OncoCanPlus/work/15/66097479347bc1ef22c3dfaa212d67]
+Mar-11 12:38:19.082 [Task monitor] DEBUG nextflow.util.ThreadPoolBuilder - Creating thread pool 'TaskFinalizer' minSize=10; maxSize=36; workQueue=LinkedBlockingQueue[-1]; allowCoreThreadTimeout=false
+Mar-11 12:38:19.090 [TaskFinalizer-1] DEBUG nextflow.processor.TaskProcessor - Handling unexpected condition for
+  task: name=ALIGNMENT (Run4.IonCode_1517_BL27); work-dir=/home/ec2-user/VC_OncoCanPlus/work/15/66097479347bc1ef22c3dfaa212d67
+  error [nextflow.exception.ProcessFailedException]: Process `ALIGNMENT (Run4.IonCode_1517_BL27)` terminated with an error exit status (1)
+Mar-11 12:38:19.104 [TaskFinalizer-1] ERROR nextflow.processor.TaskProcessor - Error executing process > 'ALIGNMENT (Run4.IonCode_1517_BL27)'
+
+Caused by:
+  Process `ALIGNMENT (Run4.IonCode_1517_BL27)` terminated with an error exit status (1)
+
+
+Command executed:
+
+  set -euo pipefail
+  
+  # Use dedicated temp directory
+  export TMPDIR=${TMPDIR:-$PWD/tmp}
+  mkdir -p "$TMPDIR"
+  
+  # Align, convert, sort
+  bwa mem s3://omica-pipeline-data/examples/CanFam3.1ref.fa Run4.IonCode_1517_BL27.fastq     | samtools view -b -     | samtools sort          -@ 3          -m 1G          -T "$TMPDIR/Run4.IonCode_1517_BL27.sort"          -o Run4.IonCode_1517_BL27.sorted.bam
+  
+  # Index
+  samtools index -@ 3 Run4.IonCode_1517_BL27.sorted.bam
+
+Command exit status:
+  1
+
+Command output:
+  (empty)
+
+Command error:
+  [E::bwa_idx_load_from_disk] fail to locate the index files
+  [main_samview] fail to read the header from "-".
+  [W::hts_set_opt] Cannot change block size for this format
+  samtools sort: failed to read header from "-"
+
+Work dir:
+  /home/ec2-user/VC_OncoCanPlus/work/15/66097479347bc1ef22c3dfaa212d67
+
+Tip: you can try to figure out what's wrong by changing to the process work dir and showing the script file named `.command.sh`
+Mar-11 12:38:19.110 [TaskFinalizer-1] DEBUG nextflow.Session - Session aborted -- Cause: Process `ALIGNMENT (Run4.IonCode_1517_BL27)` terminated with an error exit status (1)
+Mar-11 12:38:19.124 [TaskFinalizer-1] DEBUG nextflow.Session - The following nodes are still active:
+[process] MULTIQC
+  status=ACTIVE
+  port 0: (value) OPEN  ; channel: qc_files
+  port 1: (cntrl) -     ; channel: $
+
+Mar-11 12:38:19.133 [TaskFinalizer-1] WARN  n.processor.TaskPollingMonitor - Killing running tasks (1)
+Mar-11 12:38:19.143 [TaskFinalizer-1] DEBUG n.trace.WorkflowStatsObserver - Workflow completed > WorkflowStats[succeededCount=0; failedCount=1; ignoredCount=0; cachedCount=0; pendingCount=0; submittedCount=0; runningCount=0; retriesCount=0; abortedCount=1; succeedDuration=0ms; failedDuration=3.1s; cachedDuration=0ms;loadCpus=0; loadMemory=0; peakRunning=2; peakCpus=4; peakMemory=14 GB; ]
+Mar-11 12:38:19.150 [Task monitor] DEBUG n.processor.TaskPollingMonitor - <<< barrier arrives (monitor: local) - terminating tasks monitor poll loop
+Mar-11 12:38:19.317 [main] DEBUG nextflow.Session - Session await > all processes finished
+Mar-11 12:38:19.317 [main] DEBUG nextflow.Session - Session await > all barriers passed
+Mar-11 12:38:19.318 [main] DEBUG n.trace.WorkflowStatsObserver - Workflow completed > WorkflowStats[succeededCount=0; failedCount=1; ignoredCount=0; cachedCount=0; pendingCount=0; submittedCount=0; runningCount=0; retriesCount=0; abortedCount=1; succeedDuration=0ms; failedDuration=3.1s; cachedDuration=0ms;loadCpus=0; loadMemory=0; peakRunning=2; peakCpus=4; peakMemory=14 GB; ]
+Mar-11 12:38:19.323 [main] DEBUG nextflow.cache.CacheDB - Closing CacheDB done
+Mar-11 12:38:19.334 [main] INFO  org.pf4j.AbstractPluginManager - Stop plugin 'nf-amazon@3.4.1'
+Mar-11 12:38:19.334 [main] DEBUG nextflow.plugin.BasePlugin - Plugin stopped nf-amazon
+Mar-11 12:38:19.335 [main] DEBUG nextflow.script.ScriptRunner - > Execution complete -- Goodbye

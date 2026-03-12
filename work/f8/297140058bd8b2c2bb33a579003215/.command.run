@@ -1,0 +1,177 @@
+#!/bin/bash
+### ---
+### name: 'FASTQC (Run4.IonCode_1517_BL27)'
+### outputs:
+### - 'Run4.IonCode_1517_BL27_fastqc.html'
+### - 'Run4.IonCode_1517_BL27_fastqc.zip'
+### ...
+set -e
+set -u
+NXF_DEBUG=${NXF_DEBUG:=0}; [[ $NXF_DEBUG > 1 ]] && set -x
+NXF_ENTRY=${1:-nxf_main}
+
+# aws cli retry config
+export AWS_RETRY_MODE=standard 
+export AWS_MAX_ATTEMPTS=5
+# aws helper
+nxf_s3_upload() {
+    local name=$1
+    local s3path=$2
+    if [[ "$name" == - ]]; then
+      aws s3 cp --only-show-errors --storage-class STANDARD - "$s3path"
+    elif [[ -d "$name" ]]; then
+      aws s3 cp --only-show-errors --recursive --storage-class STANDARD "$name" "$s3path/$name"
+    else
+      aws s3 cp --only-show-errors --storage-class STANDARD "$name" "$s3path/$name"
+    fi
+}
+
+nxf_s3_download() {
+    local source=$1
+    local target=$2
+    local file_name=$(basename $1)
+    local is_dir=$(aws s3 ls $source | grep -F "PRE ${file_name}/" -c)
+    if [[ $is_dir == 1 ]]; then
+        aws s3 cp --only-show-errors --recursive "$source" "$target"
+    else 
+        aws s3 cp --only-show-errors "$source" "$target"
+    fi
+}
+
+nxf_sleep() {
+  sleep $1 2>/dev/null || sleep 1;
+}
+
+nxf_date() {
+    local ts=$(date +%s%3N);
+    if [[ ${#ts} == 10 ]]; then echo ${ts}000
+    elif [[ $ts == *%3N ]]; then echo ${ts/\%3N/000}
+    elif [[ $ts == *3N ]]; then echo ${ts/3N/000}
+    elif [[ ${#ts} == 13 ]]; then echo $ts
+    else echo "Unexpected timestamp value: $ts"; exit 1
+    fi
+}
+
+nxf_env() {
+    echo '============= task environment ============='
+    env | sort | sed "s/\(.*\)AWS\(.*\)=\(.\{6\}\).*/\1AWS\2=\3xxxxxxxxxxxxx/"
+    echo '============= task output =================='
+}
+
+nxf_kill() {
+    declare -a children
+    while read P PP;do
+        children[$PP]+=" $P"
+    done < <(ps -e -o pid= -o ppid=)
+
+    kill_all() {
+        [[ $1 != $$ ]] && kill $1 2>/dev/null || true
+        for i in ${children[$1]:=}; do kill_all $i; done
+    }
+
+    kill_all $1
+}
+
+nxf_mktemp() {
+    local base=${1:-/tmp}
+    mkdir -p "$base"
+    if [[ $(uname) = Darwin ]]; then mktemp -d $base/nxf.XXXXXXXXXX
+    else TMPDIR="$base" mktemp -d -t nxf.XXXXXXXXXX
+    fi
+}
+
+nxf_fs_copy() {
+  local source=$1
+  local target=$2
+  local basedir=$(dirname $1)
+  mkdir -p $target/$basedir
+  cp -fRL $source $target/$basedir
+}
+
+nxf_fs_move() {
+  local source=$1
+  local target=$2
+  local basedir=$(dirname $1)
+  mkdir -p $target/$basedir
+  mv -f $source $target/$basedir
+}
+
+nxf_fs_rsync() {
+  rsync -rRl $1 $2
+}
+
+nxf_fs_rclone() {
+  rclone copyto $1 $2/$1
+}
+
+nxf_fs_fcp() {
+  fcp $1 $2/$1
+}
+
+on_exit() {
+    local last_err=$?
+    local exit_status=${nxf_main_ret:=0}
+    [[ ${exit_status} -eq 0 && ${nxf_unstage_ret:=0} -ne 0 ]] && exit_status=${nxf_unstage_ret:=0}
+    [[ ${exit_status} -eq 0 && ${last_err} -ne 0 ]] && exit_status=${last_err}
+    printf -- $exit_status > /home/ec2-user/VC_OncoCanPlus/work/f8/297140058bd8b2c2bb33a579003215/.exitcode
+    set +u
+    exit $exit_status
+}
+
+on_term() {
+    set +e
+    [[ "$pid" ]] && nxf_kill $pid
+}
+
+nxf_launch() {
+    /bin/bash -ue /home/ec2-user/VC_OncoCanPlus/work/f8/297140058bd8b2c2bb33a579003215/.command.sh
+}
+
+nxf_stage() {
+    true
+    # stage input files
+    rm -f Run4.IonCode_1517_BL27.fastq
+    ln -s /home/ec2-user/VC_OncoCanPlus_local/data/test/Run4.IonCode_1517_BL27.fastq Run4.IonCode_1517_BL27.fastq
+}
+
+nxf_unstage_outputs() {
+    true
+}
+
+nxf_unstage_controls() {
+    true
+}
+
+nxf_unstage() {
+    if [[ ${nxf_main_ret:=0} == 0 ]]; then
+        (set -e -o pipefail; (nxf_unstage_outputs | tee -a .command.out) 3>&1 1>&2 2>&3 | tee -a .command.err)
+        nxf_unstage_ret=$?
+    fi
+    nxf_unstage_controls
+}
+
+nxf_main() {
+    trap on_exit EXIT
+    trap on_term TERM INT USR2
+    trap '' USR1
+
+    [[ "${NXF_CHDIR:-}" ]] && cd "$NXF_CHDIR"
+    NXF_SCRATCH=''
+    [[ $NXF_DEBUG > 0 ]] && nxf_env
+    touch /home/ec2-user/VC_OncoCanPlus/work/f8/297140058bd8b2c2bb33a579003215/.command.begin
+    set +u
+    # beforeScript directive
+    source ~/miniconda3/bin/activate ngs_env
+    set -u
+    [[ $NXF_SCRATCH ]] && cd $NXF_SCRATCH
+    export NXF_TASK_WORKDIR="$PWD"
+    nxf_stage
+
+    set +e
+    (set -o pipefail; (nxf_launch | tee .command.out) 3>&1 1>&2 2>&3 | tee .command.err) &
+    pid=$!
+    wait $pid || nxf_main_ret=$?
+    nxf_unstage
+}
+
+$NXF_ENTRY
