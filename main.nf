@@ -830,11 +830,11 @@ workflow {
                    .flatten()
 
   // 1) Alignment (classic bwa mem)
- aligned = ALIGNMENT(
-  READS.combine(REF)
-       .map { meta, read, ref_files -> tuple(meta, read, ref_files) }
+aligned = ALIGNMENT(
+  READS.map { meta, read -> tuple(meta, read) }
+       .combine(REF)
+       .map { tuple(meta, read), ref_files -> tuple(meta, read, ref_files) }
 )
-
 
   // 2) Add Read Groups
   rg_bams = aligned | ADD_READ_GROUP
