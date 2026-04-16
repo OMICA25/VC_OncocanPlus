@@ -832,10 +832,7 @@ workflow {
                    .flatten()
 
   // 1) Alignment (classic bwa mem)
- aligned =  ALIGNMENT(
-  READS.combine(FASTA_WITH_INDEX)
-       .map { meta, read, fasta_files -> tuple(meta, read, fasta_files) }
-)
+ aligned =  ALIGNMENT(READS)
 
 
   // 2) Add Read Groups
