@@ -44,16 +44,11 @@ Channel
     .set { READS }
 
 // ------------------------------
-// CHANNELS (Reference genome)
+// CHANNELS (Reference genome + BWA index)
 // ------------------------------
 Channel
     .fromPath("${params.fasta}*", checkIfExists: true)
-    .groupTuple()
-    .map { files ->
-        files.find { it.name.endsWith('.fa') }
-    }
-    .set { FASTA }
-
+    .set { FASTA_WITH_INDEX }
 
 // ------------------------------
 // FASTQC
@@ -94,39 +89,25 @@ process MULTIQC {
 // ALIGNMENT (classic bwa mem)
 // -----------------------------
 process ALIGNMENT {
-  label 'heavy_sort'
-  tag { meta.id }
-  publishDir "${params.outdir}/bam", mode:'copy'
-
-  cpus 3
-  memory '12 GB'
 
   input:
-    tuple val(meta), path(read), path(fasta)
-
-  output:
-    tuple val(meta),
-          path("${meta.id}.sorted.bam"),
-          path("${meta.id}.sorted.bam.bai")
+    tuple val(meta), path(read), path(fasta_files)
 
   script:
   """
   set -euo pipefail
 
-  # Use dedicated temp directory
-  export TMPDIR=\${TMPDIR:-\$PWD/tmp}
-  mkdir -p "\$TMPDIR"
+  # Extract FASTA filename
+  fasta=\$(ls *.fa)
 
-  # Align, convert, sort
-  bwa mem ${fasta} ${read} \\
+  bwa mem \$fasta ${read} \\
     | samtools view -b - \\
     | samtools sort \\
-         -@ ${task.cpus} \\
-         -m 1G \\
-         -T "\$TMPDIR/${meta.id}.sort" \\
-         -o ${meta.id}.sorted.bam
+        -@ ${task.cpus} \\
+        -m 1G \\
+        -T "\$TMPDIR/${meta.id}.sort" \\
+        -o ${meta.id}.sorted.bam
 
-  # Index
   samtools index -@ ${task.cpus} ${meta.id}.sorted.bam
   """
 }
@@ -831,10 +812,11 @@ workflow {
                    .flatten()
 
   // 1) Alignment (classic bwa mem)
-   ALIGNMENT(
-    READS.combine(FASTA)
-         .map { meta, read, fasta -> tuple(meta, read, fasta) }
+  ALIGNMENT(
+  READS.combine(FASTA_WITH_INDEX)
+       .map { meta, read, fasta_files -> tuple(meta, read, fasta_files) }
 )
+
 
   // 2) Add Read Groups
   rg_bams = aligned | ADD_READ_GROUP
