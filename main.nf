@@ -47,7 +47,11 @@ Channel
 // CHANNELS (Reference genome)
 // ------------------------------
 Channel
-    .fromPath(params.fasta, checkIfExists:true)
+    .fromPath("${params.fasta}*", checkIfExists: true)
+    .groupTuple()
+    .map { files ->
+        files.find { it.name.endsWith('.fa') }
+    }
     .set { FASTA }
 
 
