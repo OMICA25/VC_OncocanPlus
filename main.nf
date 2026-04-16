@@ -91,16 +91,26 @@ process MULTIQC {
 process ALIGNMENT {
 
   input:
-    tuple val(meta), path(read), path(fasta_files)
+    tuple val(meta), path(read)
 
   script:
   """
   set -euo pipefail
 
-  # Extract FASTA filename
-  fasta=\$(ls *.fa)
+  # Temp directory for samtools
+  export TMPDIR=\${TMPDIR:-\$PWD/tmp}
+  mkdir -p "\$TMPDIR"
 
-  bwa mem \$fasta ${read} \\
+  # Explicitly copy reference + BWA index from S3
+  aws s3 cp s3://omica-pipeline-data/examples/CanFam3.1_ensembl.fa .
+  aws s3 cp s3://omica-pipeline-data/examples/CanFam3.1_ensembl.fa.bwt .
+  aws s3 cp s3://omica-pipeline-data/examples/CanFam3.1_ensembl.fa.ann .
+  aws s3 cp s3://omica-pipeline-data/examples/CanFam3.1_ensembl.fa.amb .
+  aws s3 cp s3://omica-pipeline-data/examples/CanFam3.1_ensembl.fa.pac .
+  aws s3 cp s3://omica-pipeline-data/examples/CanFam3.1_ensembl.fa.sa .
+
+  # Align, convert, sort
+  bwa mem CanFam3.1_ensembl.fa ${read} \\
     | samtools view -b - \\
     | samtools sort \\
         -@ ${task.cpus} \\
@@ -108,9 +118,13 @@ process ALIGNMENT {
         -T "\$TMPDIR/${meta.id}.sort" \\
         -o ${meta.id}.sorted.bam
 
+  # Index BAM
   samtools index -@ ${task.cpus} ${meta.id}.sorted.bam
   """
 }
+
+
+
 // ------------------------------
 // ADD READ GROUPS
 // ------------------------------
