@@ -43,7 +43,14 @@ Channel
     }
     .set { READS }
 
-
+// Reference genome + BWA index (staged by Nextflow)
+Channel
+  .fromPath(
+    "${params.fasta}{,.bwt,.ann,.amb,.pac,.sa}",
+    checkIfExists: true
+  )
+  .collect()
+  .set { REF }
 // ------------------------------
 // FASTQC
 // ------------------------------
@@ -91,7 +98,7 @@ process ALIGNMENT {
   memory '12 GB'
 
   input:
-    tuple val(meta), path(read)
+    tuple val(meta), path(read), path(ref_files)
 
   output:
     tuple val(meta),
@@ -102,24 +109,16 @@ process ALIGNMENT {
   """
   set -euo pipefail
 
-  # Temp directory
   export TMPDIR=\${TMPDIR:-\$PWD/tmp}
   mkdir -p "\$TMPDIR"
-
-  # Copy reference + all BWA index files explicitly
-  aws s3 cp s3://omica-pipeline-data/examples/CanFam3.1_ensembl.fa .
-  aws s3 cp s3://omica-pipeline-data/examples/CanFam3.1_ensembl.fa.bwt .
-  aws s3 cp s3://omica-pipeline-data/examples/CanFam3.1_ensembl.fa.ann .
-  aws s3 cp s3://omica-pipeline-data/examples/CanFam3.1_ensembl.fa.amb .
-  aws s3 cp s3://omica-pipeline-data/examples/CanFam3.1_ensembl.fa.pac .
-  aws s3 cp s3://omica-pipeline-data/examples/CanFam3.1_ensembl.fa.sa .
 
   echo "=== Reference files present ==="
   ls -lh
   echo "==============================="
 
-  # Align, convert, sort
-  bwa mem CanFam3.1_ensembl.fa ${read} \\
+  fasta=\$(ls *.fa)
+
+  bwa mem \$fasta ${read} \\
     | samtools view -b - \\
     | samtools sort \\
         -@ ${task.cpus} \\
@@ -127,7 +126,6 @@ process ALIGNMENT {
         -T "\$TMPDIR/${meta.id}.sort" \\
         -o ${meta.id}.sorted.bam
 
-  # Index BAM
   samtools index -@ ${task.cpus} ${meta.id}.sorted.bam
   """
 }
@@ -832,7 +830,10 @@ workflow {
                    .flatten()
 
   // 1) Alignment (classic bwa mem)
- aligned =  ALIGNMENT(READS)
+ aligned = ALIGNMENT(
+  READS.combine(REF)
+       .map { meta, read, ref_files -> tuple(meta, read, ref_files) }
+)
 
 
   // 2) Add Read Groups
