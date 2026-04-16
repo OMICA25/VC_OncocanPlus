@@ -82,7 +82,7 @@ process MULTIQC {
 // ALIGNMENT (classic bwa mem)
 // -----------------------------
 process ALIGNMENT {
-  label 'heavy_sort'      // so ec2.config can limit concurrency
+  label 'heavy_sort'
   tag { meta.id }
   publishDir "${params.outdir}/bam", mode:'copy'
 
@@ -90,7 +90,7 @@ process ALIGNMENT {
   memory '12 GB'
 
   input:
-    tuple val(meta), path(read), val(fasta)
+    tuple val(meta), path(read), path(fasta)
 
   output:
     tuple val(meta),
@@ -106,19 +106,18 @@ process ALIGNMENT {
   mkdir -p "\$TMPDIR"
 
   # Align, convert, sort
-  bwa mem ${fasta} ${read} \
-    | samtools view -b - \
-    | samtools sort \
-         -@ ${task.cpus} \
-         -m 1G \
-         -T "\$TMPDIR/${meta.id}.sort" \
+  bwa mem ${fasta} ${read} \\
+    | samtools view -b - \\
+    | samtools sort \\
+         -@ ${task.cpus} \\
+         -m 1G \\
+         -T "\$TMPDIR/${meta.id}.sort" \\
          -o ${meta.id}.sorted.bam
 
   # Index
   samtools index -@ ${task.cpus} ${meta.id}.sorted.bam
   """
 }
-
 // ------------------------------
 // ADD READ GROUPS
 // ------------------------------
