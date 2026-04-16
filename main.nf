@@ -834,7 +834,7 @@ aligned = ALIGNMENT(
   READS.map { meta, read -> tuple(meta, read) }
        .combine(REF)
        .map { tuple(meta, read), ref_files -> tuple(meta, read, ref_files) }
-)
+
 
   // 2) Add Read Groups
   rg_bams = aligned | ADD_READ_GROUP
