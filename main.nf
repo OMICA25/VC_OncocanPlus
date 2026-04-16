@@ -43,12 +43,6 @@ Channel
     }
     .set { READS }
 
-// ------------------------------
-// CHANNELS (Reference genome + BWA index)
-// ------------------------------
-Channel
-    .fromPath("${params.fasta}*", checkIfExists: true)
-    .set { FASTA_WITH_INDEX }
 
 // ------------------------------
 // FASTQC
@@ -97,7 +91,7 @@ process ALIGNMENT {
   memory '12 GB'
 
   input:
-    tuple val(meta), path(read), path(ref_files)
+    tuple val(meta), path(read)
 
   output:
     tuple val(meta),
@@ -112,15 +106,20 @@ process ALIGNMENT {
   export TMPDIR=\${TMPDIR:-\$PWD/tmp}
   mkdir -p "\$TMPDIR"
 
+  # Copy reference + all BWA index files explicitly
+  aws s3 cp s3://omica-pipeline-data/examples/CanFam3.1_ensembl.fa .
+  aws s3 cp s3://omica-pipeline-data/examples/CanFam3.1_ensembl.fa.bwt .
+  aws s3 cp s3://omica-pipeline-data/examples/CanFam3.1_ensembl.fa.ann .
+  aws s3 cp s3://omica-pipeline-data/examples/CanFam3.1_ensembl.fa.amb .
+  aws s3 cp s3://omica-pipeline-data/examples/CanFam3.1_ensembl.fa.pac .
+  aws s3 cp s3://omica-pipeline-data/examples/CanFam3.1_ensembl.fa.sa .
+
   echo "=== Reference files present ==="
   ls -lh
   echo "==============================="
 
-  # Identify FASTA
-  fasta=\$(ls *.fa)
-
   # Align, convert, sort
-  bwa mem \$fasta ${read} \\
+  bwa mem CanFam3.1_ensembl.fa ${read} \\
     | samtools view -b - \\
     | samtools sort \\
         -@ ${task.cpus} \\
@@ -132,7 +131,6 @@ process ALIGNMENT {
   samtools index -@ ${task.cpus} ${meta.id}.sorted.bam
   """
 }
-
 // ------------------------------
 // ADD READ GROUPS
 // ------------------------------
