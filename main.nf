@@ -822,7 +822,7 @@ annotate_symbols "$ns"   "${id}.annovar.nonsynonymous.with_symbols.tsv" "$mapf"
 workflow {
 
   // 0) FASTQC on raw reads
-  fastqc_out = READS | FASTQC
+  fastqc_out = FASTQC(READS)
 
   // Collect FASTQC artifacts for MultiQC (html + zip)
   fastqc_files = fastqc_out
@@ -830,11 +830,11 @@ workflow {
                    .flatten()
 
   // 1) Alignment (classic bwa mem)
-aligned = ALIGNMENT(
-  READS.map { meta, read -> tuple(meta, read) }
-       .combine(REF)
-       .map { tuple(meta, read), ref_files -> tuple(meta, read, ref_files) }
-
+  aligned = ALIGNMENT(
+    READS.map { meta, read -> tuple(meta, read) }
+         .combine(REF)
+         .map { tuple(meta, read), ref_files -> tuple(meta, read, ref_files) }
+  )
 
   // 2) Add Read Groups
   rg_bams = aligned | ADD_READ_GROUP
@@ -848,7 +848,7 @@ aligned = ALIGNMENT(
   flagstat_out = filtered | SAMTOOLS_FLAGSTAT
   stats_out    = filtered | SAMTOOLS_STATS
   coverage_out = filtered
-                   .map { meta, fbam, fbai -> tuple(meta, fbam, params.bed) }
+                   .map { meta, fbam, params.bed -> tuple(meta, fbam, params.bed) }
                    | BEDTOOLS_COVERAGE_HIST
 
   // Aggregate QC files for MultiQC (FASTQC + flagstat + stats)
@@ -862,63 +862,61 @@ aligned = ALIGNMENT(
                   | VARSCAN_CALL
 
   mutect2_out = filtered
-                  .map { meta, fbam, fbai -> tuple(meta, fbam, fbai, params.bed, params.fasta, fasta_fai, fasta_dict) }
+                  .map { meta, fbam, fbai ->
+                    tuple(meta, fbam, fbai, params.bed, params.fasta, fasta_fai, fasta_dict)
+                  }
                   | MUTECT2_CALL
 
   freebayes_out = filtered
                     .map { meta, fbam, fbai -> tuple(meta, fbam, fbai, params.fasta, fasta_fai) }
                     | FREEBAYES_CALL
 
-  // 6) Consensus inputs: pass VCFs + their .tbi indexes to ISEC_CONSENSUS
-// -------------------------------
-// 7) Group PASS VCFs per sample and include both VCF + index
-// -------------------------------
+  // 6) Group PASS VCFs per sample and include both VCF + index
+  varscan_pairs = varscan_out.map { meta, vcf, idx ->
+      tuple(meta.id, [vcf, idx])
+  }
 
-// Convert caller outputs to (sample_id, [vcf, tbi])
-varscan_pairs = varscan_out.map { meta, vcf, idx ->
-    tuple(meta.id, [vcf, idx])
-}
+  mutect2_pairs = mutect2_out.map { meta, vcf, idx ->
+      tuple(meta.id, [vcf, idx])
+  }
 
-mutect2_pairs = mutect2_out.map { meta, vcf, idx ->
-    tuple(meta.id, [vcf, idx])
-}
+  freebayes_pairs = freebayes_out.map { meta, vcf, idx ->
+      tuple(meta.id, [vcf, idx])
+  }
 
-freebayes_pairs = freebayes_out.map { meta, vcf, idx ->
-    tuple(meta.id, [vcf, idx])
-}
+  merged_vcfs_per_sample =
+      varscan_pairs
+          .mix(mutect2_pairs)
+          .mix(freebayes_pairs)
+          .groupTuple()
+          .map { id, pairs ->
+              tuple([id:id], pairs.flatten())
+          }
 
-// Mix all callers → group by sample → flatten into a single VCF list
-merged_vcfs_per_sample =
-    varscan_pairs
-        .mix(mutect2_pairs)
-        .mix(freebayes_pairs)
-        .groupTuple()    // produces: (id, [ [v1,idx1], [v2,idx2], [v3,idx3] ])
-        .map { id, pairs ->
-            def files = pairs.flatten()   // [var_vcf, var_idx, mut_vcf, mut_idx, fb_vcf, fb_idx]
-            tuple([id:id], files)
-        }
+  consensus = merged_vcfs_per_sample | ISEC_CONSENSUS
 
-// Run consensus on grouped VCFs
-consensus = merged_vcfs_per_sample | ISEC_CONSENSUS
-
-  // 7) ANNOVAR annotate (full + nonsyn VCF)
+  // 7) ANNOVAR annotate
   anno_out = consensus
-               .map { meta, vcf, tbi -> tuple(meta, vcf, tbi, params.annovar_home, params.annovar_db) }
+               .map { meta, vcf, tbi ->
+                 tuple(meta, vcf, tbi, params.annovar_home, params.annovar_db)
+               }
                | ANNOVAR_ANNOTATE
 
-  // 8) Collapse transcripts to gene-level summary (from full multianno)
+  // 8) Collapse transcripts
   gene_summary = anno_out
-                   .map { meta, ann_txt, ann_ns_tsv, ns_vcfgz, ns_tbi -> tuple(meta, ann_txt) }
+                   .map { meta, ann_txt, ann_ns_tsv, ns_vcfgz, ns_tbi ->
+                     tuple(meta, ann_txt)
+                   }
                    | COLLAPSE_TRANSCRIPTS
 
-  // 9) Build EnsemblID -> GeneSymbol map via BioMart (from full multianno)
+  // 9) Build Ensembl → GeneSymbol map
   gene_map = anno_out
                .map { meta, ann_txt, ann_ns_tsv, ns_vcfgz, ns_tbi ->
                  tuple(meta, ann_txt, params.biomart_host, params.biomart_dataset)
                }
                | BUILD_GENE_MAP_BIOMART
 
-  // 10) Add Gene Symbols to both ANNOVAR tables (join by sample id)
+  // 10) Add gene symbols
   with_symbols =
     gene_map
       .map { meta, mapTsv -> tuple(meta.id, mapTsv) }
@@ -933,6 +931,6 @@ consensus = merged_vcfs_per_sample | ISEC_CONSENSUS
       }
       | ADD_GENE_SYMBOLS
 
-  // 11) MultiQC (SAFE set: fastqc + flagstat + stats)
+  // 11) MultiQC
   MULTIQC(qc_files)
 }
