@@ -44,6 +44,14 @@ Channel
     .set { READS }
 
 // ------------------------------
+// CHANNELS (Reference genome)
+// ------------------------------
+Channel
+    .fromPath(params.fasta, checkIfExists:true)
+    .set { FASTA }
+
+
+// ------------------------------
 // FASTQC
 // ------------------------------
 process FASTQC {
@@ -819,9 +827,10 @@ workflow {
                    .flatten()
 
   // 1) Alignment (classic bwa mem)
-  aligned = READS
-              .map { meta, read -> tuple(meta, read, params.fasta) }
-              | ALIGNMENT
+   ALIGNMENT(
+    READS.combine(FASTA)
+         .map { meta, read, fasta -> tuple(meta, read, fasta) }
+)
 
   // 2) Add Read Groups
   rg_bams = aligned | ADD_READ_GROUP
