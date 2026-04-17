@@ -1,8 +1,20 @@
 /*
- * VC_OncoCanPlus v1.0 - main.nf
- * Author: Antonia Noce
- * Target: CanFam3.1 panel sequencing (SE)
- * Execution: AWS EC2 (local executor) using conda env `ngs_env` and local ANNOVAR
+VC_OncoCanPlus v1.0 — main.nf
+Author: Antonia Noce
+
+Target:
+Targeted plasma cfDNA sequencing panel for dog (CanFam3.1),
+Ion Torrent single-end reads.
+
+Description:
+Nextflow pipeline for somatic variant calling (SNVs and small indels)
+from plasma cfDNA targeted sequencing data. The workflow includes
+quality control, alignment, on-target filtering, variant calling
+(VarScan and Mutect2), variant normalization, annotation with ANNOVAR,
+and gene symbol enrichment.
+
+Execution:
+Containerized execution using Docker through Nextflow.
  */
 
 nextflow.enable.dsl=2
