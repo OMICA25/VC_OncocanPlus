@@ -10,7 +10,7 @@ Description:
 Nextflow pipeline for somatic variant calling (SNVs and small indels)
 from plasma cfDNA targeted sequencing data. The workflow includes
 quality control, alignment, on-target filtering, variant calling
-(VarScan and Mutect2), variant normalization, annotation with ANNOVAR,
+(VarScan, Mutect2 and Freebayers), variant normalization, annotation with ANNOVAR,
 and gene symbol enrichment.
 
 Execution:
